@@ -1,0 +1,77 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+bin/
+lib/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# Compiled binaries
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Shader cache
+.shader_cache/
+shaders/compiled/*.vert
+shaders/compiled/*.frag
+!shaders/compiled/.gitkeep
+
+# Test outputs
+tests/visual/output/
+tests/visual/diffs/
+tests/visual/golden/*.png
+!tests/visual/golden/.gitkeep
+
+# Benchmark outputs
+benchmarks/results/
+*.json
+!package.json
+!package-lock.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.user
+*.suo
+*.sln
+*.vcxproj
+*.vcxproj.filters
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
