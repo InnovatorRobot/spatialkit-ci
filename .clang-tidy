@@ -1,0 +1,170 @@
+Checks: [
+  # Enable all checks
+  '*',
+
+  # None of these modules apply to us
+  -abseil-*,
+  -altera-*,
+  -android-*,
+  -boost-*,
+  -clang-analyzer-fuchsia*,
+  -clang-analyzer-optin.mpi*,
+  -clang-analyzer-optin.osx*,
+  -clang-analyzer-osx*,
+  -clang-analyzer-webkit*,
+  -darwin-*,
+  -fuchsia-*,
+  -linuxkernel-*,
+  -llvm-*,
+  -llvmlibc-*,
+  -mpi-*,
+  -objc-*,
+  -openmp-*,
+  -zircon-*,
+
+  # We want to allow unnamed parameters - Rule A0-1-4 and A0-1-5
+  -hicpp-named-parameter,
+  -readability-named-parameter,
+
+  # This warning cannot be suppressed with NOLINT. QAC will reject such code anyway
+  # https://github.com/llvm/llvm-project/issues/52831
+  -portability-simd-intrinsics,
+
+  # Incompatible with M3-9-1 and A7-1-1
+  -readability-avoid-const-params-in-decls,
+
+  # Reserving space in a vector makes sense only in some contexts so having this as an error is to strict
+  -performance-inefficient-vector-operation,
+
+  # Don't optimize for padding in favor of readability and maintainability
+  -clang-analyzer-optin.performance.Padding,
+
+  # Don't force using 'emplace': it's an optimization that hurts readability
+  -modernize-use-emplace,
+  -hicpp-use-emplace,
+
+  # Don't mandate no else after return. Partial conflict with M6-4-2
+  -readability-else-after-return,
+
+  # Designated initializers are not available until C++20
+  -modernize-use-designated-initializers,
+
+  # Passing by value is strongly discouraged by the Eigen documentation as
+  # it is VERY risky
+  # https://eigen.tuxfamily.org/dox/group__TopicPassingByValue.html
+  # The performance optimization this rule suggests does not apply
+  # well to our context anyway, since we do not use heap memory
+  -modernize-pass-by-value,
+
+  # We use include-what-you-use (IWYU) to fix our includes
+  -misc-include-cleaner,
+
+  # In general we do not care about performance of print statements
+  -performance-avoid-endl,
+
+  # Avoid optimizing for smaller memory footprint by using smaller integer types
+  # http://docs.cicd.autoheim.net/documentation/src/html/cpp_style_guidelines.html#cpp_styleguide_integer_types
+  -performance-enum-size,
+
+  # Marking functions as static should be a design choice
+  # http://docs.cicd.autoheim.net/documentation/src/html/autosar14_deviation_046.html
+  -readability-convert-member-functions-to-static,
+
+  # We do not use MSVC, and the usefulness of this check is questionable
+  # https://github.com/llvm/llvm-project/issues/153155
+  -portability-template-virtual-member-function,
+
+  # Too noisy, leave it up to the users
+  -readability-math-missing-parentheses,
+
+  # Specific checks that we want to disable, but miss a proper justification
+  -bugprone-easily-swappable-parameters,
+  -bugprone-implicit-widening-of-multiplication-result,
+  -misc-misplaced-const,
+  -modernize-return-braced-init-list,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -readability-qualified-auto,
+  -readability-redundant-member-init,
+  -readability-suspicious-call-argument,
+
+  # C++17 checks
+  # TODO: enable when we have fully moved to C++17
+  -modernize-concat-nested-namespaces,
+  -modernize-unary-static-assert,
+  -modernize-use-nodiscard,
+  -modernize-use-scoped-lock,
+  -modernize-use-uncaught-exceptions,
+
+  # TODO: technical debt, please fix
+  -bugprone-dynamic-static-initializers,
+  -cppcoreguidelines-avoid-const-or-ref-data-members,
+  -performance-unnecessary-value-param,
+  -readability-use-concise-preprocessor-directives,
+]
+
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+# we have no control over protobuf (*.pb.h)
+ExcludeHeaderFilterRegex: 'external/.*|.*\.pb.h'
+UseColor: true
+CheckOptions:
+  bugprone-assert-side-effect.AssertMacros: 'assert,ZEN_ASSERT,ZEN_DEBUG_ASSERT'
+  # According to team VIC, it's convenient to not require this in tests
+  bugprone-unused-local-non-trivial-variable.ExcludeTypes: '::std::future'
+  cppcoreguidelines-avoid-do-while.IgnoreMacros: true
+  cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues: '1;2;3;4'
+  cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues: '0.5;1.0;2.0;100.0'
+  # Too noisy, allowed by MISRA C++:2008 5-0-15
+  cppcoreguidelines-pro-bounds-pointer-arithmetic.AllowIncrementDecrementOperators: true
+  # See related deviation: http://docs.cicd.autoheim.net/documentation/src/html/autosar14_deviation_052.html
+  cppcoreguidelines-rvalue-reference-param-not-moved.AllowPartialMove: true
+  cppcoreguidelines-rvalue-reference-param-not-moved.IgnoreUnnamedParams: true
+  misc-const-correctness.WarnPointersAsValues: true
+  # https://github.com/llvm/llvm-project/issues/131599
+  misc-const-correctness.WarnPointersAsPointers: false
+  misc-override-with-different-visibility.DisallowedVisibilityChange: widening
+  misc-use-internal-linkage.FixMode: None
+  modernize-use-transparent-functors.SafeMode: true
+  readability-magic-numbers.IgnoredIntegerValues: '1;2;3;4'
+  readability-magic-numbers.IgnoredFloatingPointValues: '0.5;1.0;2.0;100.0'
+  # We use macros almost exclusively for assertions which actually reduce cognitive complexity
+  readability-function-cognitive-complexity.IgnoreMacros: true
+  readability-identifier-naming.ClassCase: CamelCase
+  # See deprecation guidelines: http://docs.cicd.autoheim.net/documentation/src/html/cpp_deprecation_guidelines.html
+  readability-identifier-naming.ClassIgnoredRegexp: 'DEPRECATED_.*'
+  readability-identifier-naming.ClassMemberCase: lower_case
+  readability-identifier-naming.ClassMemberSuffix: '_'
+  readability-identifier-naming.ConstexprVariableCase: CamelCase
+  readability-identifier-naming.ConstexprVariablePrefix: 'k'
+  readability-identifier-naming.ConstexprVariableIgnoredRegexp: 'value|DEPRECATED_.*'
+  readability-identifier-naming.EnumCase: CamelCase
+  readability-identifier-naming.EnumConstantCase: CamelCase
+  readability-identifier-naming.EnumConstantPrefix: 'k'
+  # See deprecation guidelines: http://docs.cicd.autoheim.net/documentation/src/html/cpp_deprecation_guidelines.html
+  readability-identifier-naming.EnumIgnoredRegexp: 'DEPRECATED_.*'
+  readability-identifier-naming.FunctionCase: camelBack
+  # See deprecation guidelines: http://docs.cicd.autoheim.net/documentation/src/html/cpp_deprecation_guidelines.html
+  readability-identifier-naming.FunctionIgnoredRegexp: 'DEPRECATED_.*'
+  readability-identifier-naming.MemberCase: lower_case
+  readability-identifier-naming.MethodCase: camelBack
+  # See deprecation guidelines: http://docs.cicd.autoheim.net/documentation/src/html/cpp_deprecation_guidelines.html
+  readability-identifier-naming.MethodIgnoredRegexp: 'DEPRECATED_.*|.*_back|.*_front|max_size'
+  readability-identifier-naming.NamespaceCase: lower_case
+  readability-identifier-naming.ParameterCase: lower_case
+  readability-identifier-naming.PrivateMemberSuffix: '_'
+  readability-identifier-naming.ProtectedMemberSuffix: '_'
+  readability-identifier-naming.StaticConstantCase: CamelCase
+  readability-identifier-naming.StaticConstantPrefix: 'k'
+  readability-identifier-naming.StructCase: CamelCase
+  # See deprecation guidelines: http://docs.cicd.autoheim.net/documentation/src/html/cpp_deprecation_guidelines.html
+  readability-identifier-naming.StructIgnoredRegexp: 'DEPRECATED_.*'
+  readability-identifier-naming.TemplateParameterCase: CamelCase
+  readability-identifier-naming.TypedefCase: CamelCase
+  readability-identifier-naming.TypeAliasCase: CamelCase
+  readability-identifier-naming.TypeAliasIgnoredRegexp: '.*ptr|.*pointer|.*reference|.*type|.*iterator|iterator_category|.*_t'
+  readability-identifier-naming.UnionCase: CamelCase
+  readability-identifier-naming.ValueTemplateParameterCase: lower_case
+  readability-identifier-naming.VariableCase: lower_case
+  # This is quite subjective, sometimes hindering readability
+  readability-simplify-boolean-expr.SimplifyDeMorgan: false
