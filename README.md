@@ -4,7 +4,7 @@
 
 This project explores how real-time rendering systems can be developed, tested, and shipped with high confidence through build automation, visual regression testing, and performance validation. It simulates the kind of internal infrastructure a team like the RealityKit framework team at Apple would rely on—without needing access to proprietary frameworks.
 
-## 🎯 Project Overview
+## Project Overview
 
 SpatialRender CI Lab is a mini real-time rendering engine combined with developer infrastructure that demonstrates:
 
@@ -14,7 +14,7 @@ SpatialRender CI Lab is a mini real-time rendering engine combined with develope
 - **CI/CD integration** for continuous validation
 - **Developer productivity tools** for fast iteration
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 SpatialRender/
@@ -35,7 +35,7 @@ SpatialRender/
 └── .github/workflows/    # CI/CD pipelines
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ### Core Renderer
 
@@ -75,7 +75,7 @@ The rendering engine is built on OpenGL 3.3 Core Profile with a clean, modular a
 - **Camera**: View and projection matrix calculations
 - **Scene**: Scene graph with transform hierarchy
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -120,7 +120,7 @@ cmake --build . -j$(nproc)
 ./spatialrender
 ```
 
-## 🔧 Build System
+## Build System
 
 ### CMake Configuration
 
@@ -143,7 +143,7 @@ cmake .. \
   -DENABLE_CCACHE=ON
 ```
 
-## 🎨 Shader Compilation Pipeline
+## Shader Compilation Pipeline
 
 The shader compilation system provides:
 
@@ -181,7 +181,7 @@ The compiler supports:
 - **glslangValidator** (fallback)
 - **Source copy** (development fallback)
 
-## 🧪 Testing
+## Testing
 
 ### Unit Tests
 
@@ -227,7 +227,7 @@ FAIL: sphere_scene - Difference: 0.0234 (threshold: 0.01)
   → Diff saved: tests/visual/diffs/sphere_scene_diff.png
 ```
 
-## 📊 Performance Benchmarking
+## Performance Benchmarking
 
 The benchmark harness measures:
 
@@ -272,7 +272,7 @@ The harness automatically tests:
 
 This helps identify performance regressions and scalability issues.
 
-## 🔄 CI/CD Pipeline
+## CI/CD Pipeline
 
 ### GitHub Actions Workflow
 
@@ -311,7 +311,7 @@ The pipeline uses:
 - **GitHub Actions cache** for dependency caching
 - **Parallel builds** with Ninja (`-j$(nproc)`)
 
-## 📈 Example Regression Failure
+## Example Regression Failure
 
 ### Scenario: Shader Compilation Error
 
@@ -356,7 +356,7 @@ FAIL: cube_scene - Difference: 0.0234 (threshold: 0.01)
 - Performance regression flagged
 - Detailed frame-by-frame analysis available
 
-## 📚 Lessons Learned
+## Lessons Learned
 
 ### 1. Shader Compilation at Build Time
 
@@ -411,7 +411,7 @@ FAIL: cube_scene - Difference: 0.0234 (threshold: 0.01)
 - Clean builds: 8 minutes → 2 minutes
 - Incremental builds: 30 seconds → 5 seconds
 
-## 🛠️ Development Workflow
+## Development Workflow
 
 ### Local Development
 
@@ -444,7 +444,7 @@ git push
 5. **Run full test suite** locally
 6. **Push to branch** and verify CI passes
 
-## 📦 Dependencies
+## Dependencies
 
 ### System Libraries
 - **GLFW 3.3+**: Window and input management
@@ -461,7 +461,7 @@ git push
 - **numpy**: Image processing
 - **pillow**: Image I/O and manipulation
 
-## 🎓 Key Takeaways
+## Key Takeaways
 
 This project demonstrates that **infrastructure matters** for rendering systems:
 
@@ -472,15 +472,3 @@ This project demonstrates that **infrastructure matters** for rendering systems:
 5. **CI/CD** enables confident, frequent releases
 
 These principles apply to any real-time rendering project, from game engines to AR/VR frameworks.
-
-## 📝 License
-
-This project is provided as an educational example. Feel free to use it as a reference for building your own rendering infrastructure.
-
-## 🤝 Contributing
-
-This is a demonstration project, but contributions that improve clarity, documentation, or add educational value are welcome!
-
----
-
-**Built with ❤️ to explore how professional rendering teams ship high-quality graphics code.**
