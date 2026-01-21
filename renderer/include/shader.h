@@ -1,41 +1,42 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
 #include <string>
 
-namespace SpatialRender {
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 
-class Shader {
-public:
-  Shader();
-  ~Shader();
+namespace SpatialRender
+{
 
-  bool LoadFromFiles(const std::string &vertexPath,
-                     const std::string &fragmentPath);
-  bool LoadFromSource(const std::string &vertexSource,
-                      const std::string &fragmentSource);
+class Shader
+{
+ public:
+    Shader();
+    ~Shader();
 
-  void Use();
-  void Unuse();
+    bool LoadFromFiles(std::string const& vertexPath, std::string const& fragmentPath);
+    bool LoadFromSource(std::string const& vertexSource, std::string const& fragmentSource);
 
-  void SetUniform(const std::string &name, float value);
-  void SetUniform(const std::string &name, int value);
-  void SetUniform(const std::string &name, const glm::vec3 &value);
-  void SetUniform(const std::string &name, const glm::vec4 &value);
-  void SetUniform(const std::string &name, const glm::mat4 &value);
+    void Use();
+    void Unuse();
 
-  GLuint GetProgram() const { return m_program; }
-  bool IsValid() const { return m_program != 0; }
+    void SetUniform(std::string const& name, float value);
+    void SetUniform(std::string const& name, int value);
+    void SetUniform(std::string const& name, glm::vec3 const& value);
+    void SetUniform(std::string const& name, glm::vec4 const& value);
+    void SetUniform(std::string const& name, glm::mat4 const& value);
 
-private:
-  GLuint CompileShader(GLenum type, const std::string &source);
-  bool LinkProgram(GLuint vertex, GLuint fragment);
-  std::string ReadFile(const std::string &path);
-  void CheckCompileErrors(GLuint shader, const std::string &type);
+    GLuint GetProgram() const { return m_program; }
+    bool IsValid() const { return m_program != 0; }
 
-  GLuint m_program;
-  bool m_linked;
+ private:
+    GLuint CompileShader(GLenum type, std::string const& source);
+    bool LinkProgram(GLuint vertex, GLuint fragment);
+    std::string ReadFile(std::string const& path);
+    void CheckCompileErrors(GLuint shader, std::string const& type);
+
+    GLuint m_program;
+    bool m_linked;
 };
 
-} // namespace SpatialRender
+}  // namespace SpatialRender
