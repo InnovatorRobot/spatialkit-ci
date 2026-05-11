@@ -2,7 +2,7 @@
 
 > A CI-driven build, test, and performance validation system for real-time 3D rendering pipelines
 
-This project explores how real-time rendering systems can be developed, tested, and shipped with high confidence through build automation, visual regression testing, and performance validation. It simulates the kind of internal infrastructure a team like the RealityKit framework team at Apple would rely on—without needing access to proprietary frameworks.
+This project explores how real-time rendering systems can be developed, tested, and shipped with high confidence through build automation, visual regression testing, and performance validation. It simulates the kind of internal infrastructure a team like the RealityKit framework team would rely on without needing access to proprietary frameworks.
 
 ## Project Overview
 
