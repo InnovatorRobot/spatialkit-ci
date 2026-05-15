@@ -57,7 +57,7 @@ endif()
 FetchContent_Declare(
     glm
     GIT_REPOSITORY https://github.com/g-truc/glm.git
-    GIT_TAG 0.9.9.8
+    GIT_TAG 1.0.1
 )
 FetchContent_MakeAvailable(glm)
 
@@ -115,6 +115,12 @@ target_link_libraries(spatialrender_lib PUBLIC
     GLEW::GLEW
     glm::glm
 )
+
+# Suppress warnings from GLM (third-party header-only library)
+get_target_property(GLM_INCLUDE_DIRS glm::glm INTERFACE_INCLUDE_DIRECTORIES)
+if(GLM_INCLUDE_DIRS)
+    target_include_directories(spatialrender_lib SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
+endif()
 
 # GLFW includes (if using FetchContent)
 if(glfw_SOURCE_DIR)

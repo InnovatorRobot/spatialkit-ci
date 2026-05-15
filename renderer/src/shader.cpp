@@ -7,14 +7,14 @@
 namespace SpatialRender
 {
 
-Shader::Shader() : m_program(0), m_linked(false)
+Shader::Shader() : m_program_(0), m_linked_(false)
 {}
 
 Shader::~Shader()
 {
-    if (m_program != 0)
+    if (m_program_ != 0)
     {
-        glDeleteProgram(m_program);
+        glDeleteProgram(m_program_);
     }
 }
 
@@ -54,26 +54,26 @@ GLuint Shader::CompileShader(GLenum type, std::string const& source)
 
 bool Shader::LinkProgram(GLuint vertex, GLuint fragment)
 {
-    m_program = glCreateProgram();
-    glAttachShader(m_program, vertex);
-    glAttachShader(m_program, fragment);
-    glLinkProgram(m_program);
+    m_program_ = glCreateProgram();
+    glAttachShader(m_program_, vertex);
+    glAttachShader(m_program_, fragment);
+    glLinkProgram(m_program_);
 
     GLint success;
-    glGetProgramiv(m_program, GL_LINK_STATUS, &success);
+    glGetProgramiv(m_program_, GL_LINK_STATUS, &success);
     if (!success)
     {
         char infoLog[1024];
-        glGetProgramInfoLog(m_program, 1024, nullptr, infoLog);
+        glGetProgramInfoLog(m_program_, 1024, nullptr, infoLog);
         std::cerr << "Shader linking failed: " << infoLog << std::endl;
-        glDeleteProgram(m_program);
-        m_program = 0;
+        glDeleteProgram(m_program_);
+        m_program_ = 0;
         return false;
     }
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-    m_linked = true;
+    m_linked_ = true;
     return true;
 }
 
@@ -120,9 +120,9 @@ bool Shader::LoadFromSource(std::string const& vertexSource, std::string const& 
 
 void Shader::Use()
 {
-    if (m_program != 0)
+    if (m_program_ != 0)
     {
-        glUseProgram(m_program);
+        glUseProgram(m_program_);
     }
 }
 
@@ -133,7 +133,9 @@ void Shader::Unuse()
 
 void Shader::SetUniform(std::string const& name, float value)
 {
-    GLint location = glGetUniformLocation(m_program, name.c_str());
+    if (m_program_ == 0)
+        return;
+    GLint location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform1f(location, value);
@@ -142,7 +144,9 @@ void Shader::SetUniform(std::string const& name, float value)
 
 void Shader::SetUniform(std::string const& name, int value)
 {
-    GLint location = glGetUniformLocation(m_program, name.c_str());
+    if (m_program_ == 0)
+        return;
+    GLint location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform1i(location, value);
@@ -151,7 +155,9 @@ void Shader::SetUniform(std::string const& name, int value)
 
 void Shader::SetUniform(std::string const& name, glm::vec3 const& value)
 {
-    GLint location = glGetUniformLocation(m_program, name.c_str());
+    if (m_program_ == 0)
+        return;
+    GLint location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform3fv(location, 1, &value[0]);
@@ -160,7 +166,7 @@ void Shader::SetUniform(std::string const& name, glm::vec3 const& value)
 
 void Shader::SetUniform(std::string const& name, glm::vec4 const& value)
 {
-    GLint location = glGetUniformLocation(m_program, name.c_str());
+    GLint location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform4fv(location, 1, &value[0]);
@@ -169,7 +175,7 @@ void Shader::SetUniform(std::string const& name, glm::vec4 const& value)
 
 void Shader::SetUniform(std::string const& name, glm::mat4 const& value)
 {
-    GLint location = glGetUniformLocation(m_program, name.c_str());
+    GLint location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);

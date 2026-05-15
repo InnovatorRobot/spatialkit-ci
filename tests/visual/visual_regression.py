@@ -67,7 +67,8 @@ class VisualRegressionTester:
         diff_normalized = (diff_arr / 255.0 * 255).astype(np.uint8)
         diff_image = Image.fromarray(diff_normalized)
 
-        match = diff_percentage <= self.threshold
+        match = bool(diff_percentage <= self.threshold)
+        diff_percentage = float(diff_percentage)
         return match, diff_percentage, diff_image
 
     def test_image(self, test_name: str) -> bool:

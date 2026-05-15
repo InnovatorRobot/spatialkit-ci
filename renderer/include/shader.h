@@ -26,8 +26,8 @@ class Shader
     void SetUniform(std::string const& name, glm::vec4 const& value);
     void SetUniform(std::string const& name, glm::mat4 const& value);
 
-    GLuint GetProgram() const { return m_program; }
-    bool IsValid() const { return m_program != 0; }
+    GLuint GetProgram() const { return m_program_; }
+    bool IsValid() const { return m_program_ != 0; }
 
  private:
     GLuint CompileShader(GLenum type, std::string const& source);
@@ -35,8 +35,8 @@ class Shader
     std::string ReadFile(std::string const& path);
     void CheckCompileErrors(GLuint shader, std::string const& type);
 
-    GLuint m_program;
-    bool m_linked;
+    GLuint m_program_;
+    bool m_linked_;
 };
 
 }  // namespace SpatialRender
