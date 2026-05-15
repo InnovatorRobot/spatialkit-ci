@@ -96,7 +96,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.os }}-${{ matrix.build_type }}
           path: build/Testing/**/*.xml
@@ -194,7 +194,7 @@ jobs:
 
       - name: Upload visual test artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: visual-regression-failures
           path: |
@@ -245,7 +245,7 @@ jobs:
           DISPLAY: :99
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
           path: build/benchmarks/*.json
