@@ -17,8 +17,8 @@ void Scene::addObject(  // NOLINT(readability-identifier-naming,misc-use-interna
     glm::vec3 const& color)
 {
     SceneObject obj;
-    obj.mesh      = mesh;
-    obj.shader    = shader;
+    obj.mesh      = std::move(mesh);
+    obj.shader    = std::move(shader);
     obj.transform = transform;
     obj.color     = color;
     m_objects_.push_back(obj);

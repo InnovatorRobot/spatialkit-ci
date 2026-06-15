@@ -1,12 +1,11 @@
 #ifndef SPATIAL_RENDER_RENDERER_H_
 #define SPATIAL_RENDER_RENDERER_H_
 
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include <GL/glew.h>
-#include <glm/glm.hpp>
 
 namespace spatial_render
 {
@@ -26,7 +25,7 @@ struct Vertex
 
 class Renderer
 {
- public:
+public:
     Renderer(int width, int height);
     ~Renderer();
 
@@ -48,10 +47,10 @@ class Renderer
     int getHeight() const { return m_height_; }
 
     // Framebuffer capture for testing
-    void captureFramebuffer(std::vector<uint8_t>& pixels);
-    bool saveFramebufferToFile(std::string const& path);
+    void captureFramebuffer(std::vector<uint8_t>& pixels) const;
+    bool saveFramebufferToFile(std::string const& path) const;
 
- private:
+private:
     int m_width_;
     int m_height_;
     bool m_initialized_{false};

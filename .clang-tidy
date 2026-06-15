@@ -1,128 +1,135 @@
 Checks:
-  [
-    "*",
+  - "*"
 
-    -abseil-*,
-    -altera-*,
-    -android-*,
-    -boost-*,
-    -clang-analyzer-fuchsia*,
-    -clang-analyzer-optin.mpi*,
-    -clang-analyzer-optin.osx*,
-    -clang-analyzer-osx*,
-    -clang-analyzer-webkit*,
-    -darwin-*,
-    -fuchsia-*,
-    -linuxkernel-*,
-    -llvm-*,
-    -llvmlibc-*,
-    -mpi-*,
-    -objc-*,
-    -openmp-*,
-    -zircon-*,
+  # Platform / project specific
+  - -abseil-*
+  - -altera-*
+  - -android-*
+  - -boost-*
+  - -darwin-*
+  - -fuchsia-*
+  - -linuxkernel-*
+  - -llvm-*
+  - -llvmlibc-*
+  - -mpi-*
+  - -objc-*
+  - -openmp-*
+  - -zircon-*
 
-    -readability-named-parameter,
+  # Unused / noisy analyzer checks
+  - -clang-analyzer-fuchsia*
+  - -clang-analyzer-optin.mpi*
+  - -clang-analyzer-optin.osx*
+  - -clang-analyzer-osx*
+  - -clang-analyzer-webkit*
+  - -clang-analyzer-optin.performance.Padding
+  - -clang-analyzer-security.ArrayBound
+  - -clang-analyzer-optin.portability.UnixAPI
+  - -clang-diagnostic-gcc-install-dir-libstdcxx
 
-    -readability-avoid-const-params-in-decls,
+  # Style preferences
+  - -hicpp-use-emplace
+  - -modernize-use-designated-initializers
+  - -modernize-use-trailing-return-type
+  - -modernize-concat-nested-namespaces
+  - -modernize-return-braced-init-list
+  - -modernize-unary-static-assert
+  - -modernize-use-nodiscard
+  - -modernize-use-scoped-lock
+  - -modernize-use-uncaught-exceptions
 
-    -performance-inefficient-vector-operation,
+  # High-noise checks
+  - -misc-include-cleaner
+  - -misc-misplaced-const
+  - -performance-avoid-endl
+  - -performance-enum-size
+  - -performance-inefficient-vector-operation
+  - -performance-unnecessary-value-param
 
-    -clang-analyzer-optin.performance.Padding,
-    -clang-diagnostic-gcc-install-dir-libstdcxx,
+  # Naming / readability noise
+  - -readability-avoid-const-params-in-decls
+  - -readability-convert-member-functions-to-static
+  - -readability-identifier-length
+  - -readability-math-missing-parentheses
+  - -readability-named-parameter
+  - -readability-qualified-auto
+  - -readability-redundant-member-init
+  - -readability-suspicious-call-argument
+  - -readability-use-concise-preprocessor-directives
 
-    -hicpp-use-emplace,
+  # Frequent false positives
+  - -bugprone-dynamic-static-initializers
+  - -bugprone-easily-swappable-parameters
+  - -bugprone-implicit-widening-of-multiplication-result
 
-    -modernize-use-designated-initializers,
-
-    -misc-include-cleaner,
-
-    -performance-avoid-endl,
-
-    -performance-enum-size,
-
-    -readability-convert-member-functions-to-static,
-
-    -portability-template-virtual-member-function,
-
-    -readability-math-missing-parentheses,
-
-    -bugprone-easily-swappable-parameters,
-    -bugprone-implicit-widening-of-multiplication-result,
-    -misc-misplaced-const,
-    -modernize-return-braced-init-list,
-    -modernize-use-trailing-return-type,
-    -readability-identifier-length,
-    -readability-qualified-auto,
-    -readability-redundant-member-init,
-    -readability-suspicious-call-argument,
-
-    -modernize-concat-nested-namespaces,
-    -modernize-unary-static-assert,
-    -modernize-use-nodiscard,
-    -modernize-use-scoped-lock,
-    -modernize-use-uncaught-exceptions,
-
-    -bugprone-dynamic-static-initializers,
-    -cppcoreguidelines-avoid-const-or-ref-data-members,
-    -performance-unnecessary-value-param,
-    -readability-use-concise-preprocessor-directives,
-  ]
+  # Design-opinionated
+  - -cppcoreguidelines-avoid-const-or-ref-data-members
+  - -portability-template-virtual-member-function
 
 WarningsAsErrors: "*"
-HeaderFilterRegex: ".*"
 
-ExcludeHeaderFilterRegex: 'external/.*|.*\.pb.h|build/_deps/.*'
+HeaderFilterRegex: ".*"
+ExcludeHeaderFilterRegex: "external/.*|.*\\.pb\\.h|build/_deps/.*"
+
+ExtraArgsBefore:
+  - --gcc-install-dir=/usr/lib/gcc/x86_64-linux-gnu/11
+
 UseColor: true
+
 CheckOptions:
-  bugprone-assert-side-effect.AssertMacros: "assert;ASSERT;ASSERT_TRUE;ASSERT_FALSE;EXPECT;EXPECT_TRUE;EXPECT_FALSE"
+  bugprone-assert-side-effect.AssertMacros: >
+    assert;ASSERT;ASSERT_TRUE;ASSERT_FALSE;EXPECT;EXPECT_TRUE;EXPECT_FALSE
+
   bugprone-unused-local-non-trivial-variable.ExcludeTypes: "::std::future"
+
   cppcoreguidelines-avoid-do-while.IgnoreMacros: true
+
   cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues: "1;2;3;4"
   cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues: "0.5;1.0;2.0;100.0"
+
   cppcoreguidelines-pro-bounds-pointer-arithmetic.AllowIncrementDecrementOperators: true
+
   cppcoreguidelines-rvalue-reference-param-not-moved.AllowPartialMove: true
   cppcoreguidelines-rvalue-reference-param-not-moved.IgnoreUnnamedParams: true
+
   misc-const-correctness.WarnPointersAsValues: true
-
   misc-const-correctness.WarnPointersAsPointers: false
-  misc-override-with-different-visibility.DisallowedVisibilityChange: widening
-  misc-use-internal-linkage.FixMode: None
-  modernize-use-transparent-functors.SafeMode: true
-  readability-magic-numbers.IgnoredIntegerValues: "1;2;3;4"
-  readability-magic-numbers.IgnoredFloatingPointValues: "0.5;1.0;2.0;100.0"
-  readability-function-cognitive-complexity.IgnoreMacros: true
-  readability-identifier-naming.ClassCase: CamelCase
 
-  readability-identifier-naming.ClassIgnoredRegexp: "DEPRECATED_.*"
+  misc-override-with-different-visibility.DisallowedVisibilityChange: widening
+
+  misc-use-internal-linkage.FixMode: None
+
+  modernize-use-transparent-functors.SafeMode: true
+
+  readability-function-cognitive-complexity.IgnoreMacros: true
+
+  readability-identifier-naming.NamespaceCase: lower_case
+
+  readability-identifier-naming.ClassCase: CamelCase
+  readability-identifier-naming.StructCase: CamelCase
+  readability-identifier-naming.UnionCase: CamelCase
+  readability-identifier-naming.EnumCase: CamelCase
+
+  readability-identifier-naming.FunctionCase: camelBack
+  readability-identifier-naming.MethodCase: camelBack
+
+  readability-identifier-naming.VariableCase: lower_case
+  readability-identifier-naming.ParameterCase: lower_case
+  readability-identifier-naming.MemberCase: lower_case
+
+  readability-identifier-naming.PrivateMemberSuffix: "_"
+  readability-identifier-naming.ProtectedMemberSuffix: "_"
 
   readability-identifier-naming.ConstexprVariableCase: CamelCase
   readability-identifier-naming.ConstexprVariablePrefix: "k"
-  readability-identifier-naming.ConstexprVariableIgnoredRegexp: "value|DEPRECATED_.*"
-  readability-identifier-naming.EnumCase: CamelCase
+
+  readability-identifier-naming.StaticConstantCase: CamelCase
+  readability-identifier-naming.StaticConstantPrefix: "k"
+
   readability-identifier-naming.EnumConstantCase: CamelCase
   readability-identifier-naming.EnumConstantPrefix: "k"
 
-  readability-identifier-naming.EnumIgnoredRegexp: "DEPRECATED_.*"
-  readability-identifier-naming.FunctionCase: camelBack
-  readability-identifier-naming.FunctionIgnoredRegexp: "DEPRECATED_.*"
-  readability-identifier-naming.MemberCase: lower_case
-  readability-identifier-naming.MethodCase: camelBack
-  readability-identifier-naming.MethodSuffix: ""
-  readability-identifier-naming.FunctionSuffix: ""
-  readability-identifier-naming.MethodIgnoredRegexp: "DEPRECATED_.*|.*_back|.*_front|max_size"
-  readability-identifier-naming.NamespaceCase: lower_case
-  readability-identifier-naming.ParameterCase: lower_case
-  readability-identifier-naming.PrivateMemberSuffix: "_"
-  readability-identifier-naming.ProtectedMemberSuffix: "_"
-  readability-identifier-naming.StaticConstantCase: CamelCase
-  readability-identifier-naming.StaticConstantPrefix: "k"
-  readability-identifier-naming.StructCase: CamelCase
-  readability-identifier-naming.StructIgnoredRegexp: "DEPRECATED_.*"
   readability-identifier-naming.TemplateParameterCase: CamelCase
-  readability-identifier-naming.TypedefCase: CamelCase
-  readability-identifier-naming.TypeAliasCase: CamelCase
-  readability-identifier-naming.TypeAliasIgnoredRegexp: ".*ptr|.*pointer|.*reference|.*type|.*iterator|iterator_category|.*_t"
-  readability-identifier-naming.UnionCase: CamelCase
   readability-identifier-naming.ValueTemplateParameterCase: lower_case
-  readability-identifier-naming.VariableCase: lower_case
+
   readability-simplify-boolean-expr.SimplifyDeMorgan: false

@@ -62,7 +62,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* const* const argv)
     }
 
     // Load shaders
-    std::shared_ptr<spatial_render::Shader> shader = std::make_shared<spatial_render::Shader>();
+    std::shared_ptr<spatial_render::Shader> const shader =
+        std::make_shared<spatial_render::Shader>();
     if (!shader->loadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"))
     {
         std::cerr << "Failed to load shaders" << std::endl;
@@ -71,7 +72,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* const* const argv)
 
     // Create scene
     spatial_render::Scene scene;
-    std::shared_ptr<spatial_render::Mesh> cube =
+    std::shared_ptr<spatial_render::Mesh> const cube =
         std::shared_ptr<spatial_render::Mesh>(spatial_render::createCubeMesh());
     scene.addObject(cube,
                     shader,

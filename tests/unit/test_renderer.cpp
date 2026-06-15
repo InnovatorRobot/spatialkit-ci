@@ -10,7 +10,7 @@ using namespace spatial_render;
 
 class RendererTest : public ::testing::Test
 {
- protected:
+protected:
     void SetUp() override
     {
         // Note: These tests require OpenGL context

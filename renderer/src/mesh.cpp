@@ -3,9 +3,15 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <numbers>
 
 namespace spatial_render
 {
+
+namespace
+{
+constexpr float kPi = std::numbers::pi_v<float>;
+}  // namespace
 
 Mesh::Mesh() = default;
 
@@ -42,49 +48,49 @@ void Mesh::upload()
 
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO_);
     glBufferData(GL_ARRAY_BUFFER,
-                 m_vertices_.size() * sizeof(Vertex),
+                 static_cast<GLsizeiptr>(m_vertices_.size() * sizeof(Vertex)),
                  m_vertices_.data(),
                  GL_STATIC_DRAW);
 
     // Position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        0,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Vertex),
-        reinterpret_cast<void*>(  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
-            offsetof(Vertex, position)));
+    // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr)
+    glVertexAttribPointer(0,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          reinterpret_cast<void*>(offsetof(Vertex, position)));
+    // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr)
 
     // Normal
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(
-        1,
-        3,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Vertex),
-        reinterpret_cast<void*>(  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
-            offsetof(Vertex, normal)));
+    // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr)
+    glVertexAttribPointer(1,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          reinterpret_cast<void*>(offsetof(Vertex, normal)));
+    // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr)
 
     // TexCoord
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(
-        2,
-        2,
-        GL_FLOAT,
-        GL_FALSE,
-        sizeof(Vertex),
-        reinterpret_cast<void*>(  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
-            offsetof(Vertex, tex_coord)));
+    // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr)
+    glVertexAttribPointer(2,
+                          2,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          reinterpret_cast<void*>(offsetof(Vertex, tex_coord)));
+    // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast,performance-no-int-to-ptr)
 
     if (!m_indices_.empty())
     {
         glGenBuffers(1, &m_EBO_);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     m_indices_.size() * sizeof(unsigned int),
+                     static_cast<GLsizeiptr>(m_indices_.size() * sizeof(unsigned int)),
                      m_indices_.data(),
                      GL_STATIC_DRAW);
     }
@@ -104,10 +110,8 @@ void Mesh::render()
 
     if (!m_indices_.empty())
     {
-        glDrawElements(GL_TRIANGLES,
-                       static_cast<GLsizei>(m_indices_.size()),
-                       GL_UNSIGNED_INT,
-                       nullptr);
+        glDrawElements(
+            GL_TRIANGLES, static_cast<GLsizei>(m_indices_.size()), GL_UNSIGNED_INT, nullptr);
     }
     else
     {
@@ -141,7 +145,7 @@ Mesh* createCubeMesh()  // NOLINT(cppcoreguidelines-owning-memory)
 {
     Mesh* const mesh = new Mesh();  // NOLINT(cppcoreguidelines-owning-memory)
 
-    std::vector<Vertex> vertices = {
+    std::vector<Vertex> const vertices = {
         // Front face
         {{-0.5F, -0.5F, 0.5F}, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}},
         {{0.5F, -0.5F, 0.5F}, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}},
@@ -154,14 +158,16 @@ Mesh* createCubeMesh()  // NOLINT(cppcoreguidelines-owning-memory)
         {{-0.5F, 0.5F, -0.5F}, {0.0F, 0.0F, -1.0F}, {1.0F, 1.0F}},
     };
 
-    std::vector<unsigned int> indices = {
+    // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    std::vector<unsigned int> const indices = {
         0, 1, 2, 2, 3, 0,  // Front
         4, 5, 6, 6, 7, 4,  // Back
         0, 3, 7, 7, 4, 0,  // Left
         1, 2, 6, 6, 5, 1,  // Right
         0, 1, 5, 5, 4, 0,  // Bottom
-        3, 2, 6, 6, 7, 3   // Top
+        3, 2, 6, 6, 7, 3,  // Top
     };
+    // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
     mesh->setVertices(vertices);
     mesh->setIndices(indices);
@@ -181,9 +187,9 @@ Mesh* createSphereMesh(int segments)  // NOLINT(cppcoreguidelines-owning-memory)
             float const x_segment = static_cast<float>(x) / static_cast<float>(segments);
             float const y_segment = static_cast<float>(y) / static_cast<float>(segments);
             // NOLINTBEGIN(cppcoreguidelines-init-variables)
-            float const x_pos = std::cos(x_segment * 2.0F * M_PI) * std::sin(y_segment * M_PI);
-            float const y_pos = std::cos(y_segment * M_PI);
-            float const z_pos = std::sin(x_segment * 2.0F * M_PI) * std::sin(y_segment * M_PI);
+            float const x_pos = std::cos(x_segment * 2.0F * kPi) * std::sin(y_segment * kPi);
+            float const y_pos = std::cos(y_segment * kPi);
+            float const z_pos = std::sin(x_segment * 2.0F * kPi) * std::sin(y_segment * kPi);
             // NOLINTEND(cppcoreguidelines-init-variables)
 
             Vertex const v{
@@ -224,12 +230,14 @@ Mesh* createPlaneMesh(float width, float height)  // NOLINT(cppcoreguidelines-ow
     float const w = width * 0.5F;
     float const h = height * 0.5F;
 
-    std::vector<Vertex> vertices = {{{-w, 0.0F, -h}, {0.0F, 1.0F, 0.0F}, {0.0F, 0.0F}},
-                                    {{w, 0.0F, -h}, {0.0F, 1.0F, 0.0F}, {1.0F, 0.0F}},
-                                    {{w, 0.0F, h}, {0.0F, 1.0F, 0.0F}, {1.0F, 1.0F}},
-                                    {{-w, 0.0F, h}, {0.0F, 1.0F, 0.0F}, {0.0F, 1.0F}}};
+    std::vector<Vertex> const vertices = {
+        {{-w, 0.0F, -h}, {0.0F, 1.0F, 0.0F}, {0.0F, 0.0F}},
+        {{w, 0.0F, -h}, {0.0F, 1.0F, 0.0F}, {1.0F, 0.0F}},
+        {{w, 0.0F, h}, {0.0F, 1.0F, 0.0F}, {1.0F, 1.0F}},
+        {{-w, 0.0F, h}, {0.0F, 1.0F, 0.0F}, {0.0F, 1.0F}},
+    };
 
-    std::vector<unsigned int> indices = {0, 1, 2, 2, 3, 0};
+    std::vector<unsigned int> const indices = {0, 1, 2, 2, 3, 0};
 
     mesh->setVertices(vertices);
     mesh->setIndices(indices);

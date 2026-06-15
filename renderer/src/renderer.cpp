@@ -12,7 +12,8 @@ namespace spatial_render
 {
 
 Renderer::Renderer(int width, int height) : m_width_(width), m_height_(height)
-{}
+{
+}
 
 Renderer::~Renderer()
 {
@@ -69,13 +70,15 @@ void Renderer::endFrame()
 
 void Renderer::clear(glm::vec4 const& color)
 {
+    // NOLINTBEGIN(cppcoreguidelines-pro-type-union-access)
     glClearColor(color.r, color.g, color.b, color.a);
+    // NOLINTEND(cppcoreguidelines-pro-type-union-access)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::renderScene(Scene& scene, Camera& camera)
 {
-    glm::mat4 view_proj = camera.getViewProjectionMatrix();
+    glm::mat4 const view_proj = camera.getViewProjectionMatrix();
 
     for (auto const& obj : scene.getObjects())
     {
@@ -95,9 +98,7 @@ void Renderer::renderScene(Scene& scene, Camera& camera)
     }
 }
 
-void Renderer::
-    captureFramebuffer(  // NOLINT(readability-identifier-naming,misc-use-internal-linkage)
-        std::vector<uint8_t>& pixels)
+void Renderer::captureFramebuffer(std::vector<uint8_t>& pixels) const
 {
     pixels.resize(m_width_ * m_height_ * 4);
     glReadPixels(0, 0, m_width_, m_height_, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
@@ -109,12 +110,14 @@ void Renderer::
         int const bottom = m_height_ - 1 - y;
         for (int x = 0; x < m_width_ * 4; ++x)
         {
+            // NOLINTBEGIN(cppcoreguidelines-pro-bounds-avoid-unchecked-container-access)
             std::swap(pixels[top * m_width_ * 4 + x], pixels[bottom * m_width_ * 4 + x]);
+            // NOLINTEND(cppcoreguidelines-pro-bounds-avoid-unchecked-container-access)
         }
     }
 }
 
-bool Renderer::saveFramebufferToFile(std::string const& path)
+bool Renderer::saveFramebufferToFile(std::string const& path) const
 {
     std::vector<uint8_t> pixels;
     captureFramebuffer(pixels);

@@ -26,11 +26,11 @@ class Shader
     void use() const;
     void unuse();
 
-    void setUniform(std::string const& name, float value);
-    void setUniform(std::string const& name, int value);
-    void setUniform(std::string const& name, glm::vec3 const& value);
-    void setUniform(std::string const& name, glm::vec4 const& value);
-    void setUniform(std::string const& name, glm::mat4 const& value);
+    void setUniform(std::string const& name, float value) const;
+    void setUniform(std::string const& name, int value) const;
+    void setUniform(std::string const& name, glm::vec3 const& value) const;
+    void setUniform(std::string const& name, glm::vec4 const& value) const;
+    void setUniform(std::string const& name, glm::mat4 const& value) const;
 
     GLuint getProgram() const { return m_program_; }
     bool isValid() const { return m_program_ != 0; }
