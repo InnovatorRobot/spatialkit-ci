@@ -258,6 +258,53 @@ jobs:
                   path: build/benchmarks/*.json
                   if-no-files-found: ignore
 
+    sanitizer-build:
+        name: Sanitizer Build (ASan + UBSan)
+        runs-on: ubuntu-latest
+        needs: build-and-test
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y \
+                    build-essential \
+                    cmake \
+                    ninja-build \
+                    libgl1-mesa-dev \
+                    libglfw3-dev \
+                    libglew-dev \
+                    xvfb
+
+            - name: Compile shaders
+              run: |
+                  python3 tools/shader_compiler.py --all --variant debug
+
+            - name: Configure with sanitizers
+              run: |
+                  cmake -B build \
+                    -DCMAKE_BUILD_TYPE=Debug \
+                    -DBUILD_TESTS=ON \
+                    -DENABLE_CCACHE=OFF \
+                    -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" \
+                    -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined" \
+                    -G Ninja
+
+            - name: Build
+              run: |
+                  cmake --build build --parallel $(nproc)
+
+            - name: Run unit tests with sanitizers
+              run: |
+                  cd build
+                  xvfb-run -a ctest --output-on-failure
+              env:
+                  ASAN_OPTIONS: halt_on_error=1:detect_leaks=1
+                  UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+
     code-quality:
         name: Code Quality Checks
         runs-on: ubuntu-latest
