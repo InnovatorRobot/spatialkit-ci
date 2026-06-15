@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SPATIAL_RENDER_MESH_H_
+#define SPATIAL_RENDER_MESH_H_
 
 #include <vector>
 
@@ -7,7 +8,7 @@
 
 #include "renderer.h"
 
-namespace SpatialRender
+namespace spatial_render
 {
 
 class Mesh
@@ -16,30 +17,38 @@ class Mesh
     Mesh();
     ~Mesh();
 
-    void SetVertices(std::vector<Vertex> const& vertices);
-    void SetIndices(std::vector<unsigned int> const& indices);
+    Mesh(Mesh const&)            = delete;
+    Mesh& operator=(Mesh const&) = delete;
+    Mesh(Mesh&&)                 = delete;
+    Mesh& operator=(Mesh&&)      = delete;
 
-    void Upload();
-    void Render();
-    void Cleanup();
+    void setVertices(std::vector<Vertex> const& vertices);
+    void setIndices(std::vector<unsigned int> const& indices);
 
-    size_t GetVertexCount() const { return m_vertices.size(); }
-    size_t GetIndexCount() const { return m_indices.size(); }
+    void upload();
+    void render();
+    void cleanup();
+
+    size_t getVertexCount() const { return m_vertices_.size(); }
+    size_t getIndexCount() const { return m_indices_.size(); }
 
  private:
-    std::vector<Vertex> m_vertices;
-    std::vector<unsigned int> m_indices;
+    std::vector<Vertex> m_vertices_;
+    std::vector<unsigned int> m_indices_;
 
-    GLuint m_VAO;
-    GLuint m_VBO;
-    GLuint m_EBO;
+    GLuint m_VAO_{0};
+    GLuint m_VBO_{0};
+    GLuint m_EBO_{0};
 
-    bool m_uploaded;
+    bool m_uploaded_{false};
 };
 
 // Factory functions for common meshes
-Mesh* CreateCubeMesh();
-Mesh* CreateSphereMesh(int segments = 32);
-Mesh* CreatePlaneMesh(float width = 1.0f, float height = 1.0f);
+constexpr int kDefaultSphereSegments = 32;
+Mesh* createCubeMesh();
+Mesh* createSphereMesh(int segments = kDefaultSphereSegments);
+Mesh* createPlaneMesh(float width = 1.0F, float height = 1.0F);
 
-}  // namespace SpatialRender
+}  // namespace spatial_render
+
+#endif  // SPATIAL_RENDER_MESH_H_

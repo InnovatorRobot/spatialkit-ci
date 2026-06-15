@@ -1,14 +1,19 @@
 #include "shader.h"
 
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
-namespace SpatialRender
+namespace spatial_render
 {
 
-Shader::Shader() : m_program_(0), m_linked_(false)
-{}
+namespace
+{
+constexpr std::size_t kInfoLogSize = 1024U;
+}  // namespace
+
+Shader::Shader() = default;
 
 Shader::~Shader()
 {
@@ -18,7 +23,7 @@ Shader::~Shader()
     }
 }
 
-std::string Shader::ReadFile(std::string const& path)
+std::string Shader::readFile(std::string const& path)
 {
     std::ifstream file(path);
     if (!file.is_open())
@@ -32,18 +37,18 @@ std::string Shader::ReadFile(std::string const& path)
     return buffer.str();
 }
 
-GLuint Shader::CompileShader(GLenum type, std::string const& source)
+GLuint Shader::compileShader(GLenum type, std::string const& source)
 {
-    GLuint shader   = glCreateShader(type);
-    char const* src = source.c_str();
+    GLuint const shader = glCreateShader(type);
+    char const* src     = source.c_str();
     glShaderSource(shader, 1, &src, nullptr);
     glCompileShader(shader);
 
-    CheckCompileErrors(shader, (type == GL_VERTEX_SHADER) ? "VERTEX" : "FRAGMENT");
+    checkCompileErrors(shader, (type == GL_VERTEX_SHADER) ? "VERTEX" : "FRAGMENT");
 
-    GLint success;
+    GLint success = 0;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success)
+    if (success == 0)
     {
         glDeleteShader(shader);
         return 0;
@@ -52,20 +57,23 @@ GLuint Shader::CompileShader(GLenum type, std::string const& source)
     return shader;
 }
 
-bool Shader::LinkProgram(GLuint vertex, GLuint fragment)
+bool Shader::linkProgram(GLuint vertex, GLuint fragment)
 {
     m_program_ = glCreateProgram();
     glAttachShader(m_program_, vertex);
     glAttachShader(m_program_, fragment);
     glLinkProgram(m_program_);
 
-    GLint success;
+    GLint success = 0;
     glGetProgramiv(m_program_, GL_LINK_STATUS, &success);
-    if (!success)
+    if (success == 0)
     {
-        char infoLog[1024];
-        glGetProgramInfoLog(m_program_, 1024, nullptr, infoLog);
-        std::cerr << "Shader linking failed: " << infoLog << std::endl;
+        std::array<char, kInfoLogSize> info_log{};
+        glGetProgramInfoLog(m_program_,
+                            static_cast<GLsizei>(kInfoLogSize),
+                            nullptr,
+                            info_log.data());
+        std::cerr << "Shader linking failed: " << info_log.data() << std::endl;
         glDeleteProgram(m_program_);
         m_program_ = 0;
         return false;
@@ -77,48 +85,52 @@ bool Shader::LinkProgram(GLuint vertex, GLuint fragment)
     return true;
 }
 
-void Shader::CheckCompileErrors(GLuint shader, std::string const& type)
+void Shader::checkCompileErrors(GLuint shader, std::string const& type)
 {
-    GLint success;
+    GLint success = 0;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success)
+    if (success == 0)
     {
-        char infoLog[1024];
-        glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
-        std::cerr << "Shader compilation error (" << type << "): " << infoLog << std::endl;
+        std::array<char, kInfoLogSize> info_log{};
+        glGetShaderInfoLog(shader, static_cast<GLsizei>(kInfoLogSize), nullptr, info_log.data());
+        std::cerr << "Shader compilation error (" << type << "): " << info_log.data() << std::endl;
     }
 }
 
-bool Shader::LoadFromFiles(std::string const& vertexPath, std::string const& fragmentPath)
+bool Shader::loadFromFiles(std::string const& vertex_path, std::string const& fragment_path)
 {
-    std::string vertexSource   = ReadFile(vertexPath);
-    std::string fragmentSource = ReadFile(fragmentPath);
+    std::string vertex_source   = readFile(vertex_path);
+    std::string fragment_source = readFile(fragment_path);
 
-    if (vertexSource.empty() || fragmentSource.empty())
+    if (vertex_source.empty() || fragment_source.empty())
     {
         return false;
     }
 
-    return LoadFromSource(vertexSource, fragmentSource);
+    return loadFromSource(vertex_source, fragment_source);
 }
 
-bool Shader::LoadFromSource(std::string const& vertexSource, std::string const& fragmentSource)
+bool Shader::loadFromSource(std::string const& vertex_source, std::string const& fragment_source)
 {
-    GLuint vertex = CompileShader(GL_VERTEX_SHADER, vertexSource);
+    GLuint const vertex =  // NOLINT(cppcoreguidelines-init-variables)
+        compileShader(GL_VERTEX_SHADER, vertex_source);
     if (vertex == 0)
+    {
         return false;
+    }
 
-    GLuint fragment = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
+    GLuint const fragment =  // NOLINT(cppcoreguidelines-init-variables)
+        compileShader(GL_FRAGMENT_SHADER, fragment_source);
     if (fragment == 0)
     {
         glDeleteShader(vertex);
         return false;
     }
 
-    return LinkProgram(vertex, fragment);
+    return linkProgram(vertex, fragment);
 }
 
-void Shader::Use()
+void Shader::use() const
 {
     if (m_program_ != 0)
     {
@@ -126,60 +138,74 @@ void Shader::Use()
     }
 }
 
-void Shader::Unuse()
+void Shader::unuse()
 {
     glUseProgram(0);
 }
 
-void Shader::SetUniform(std::string const& name, float value)
+void Shader::setUniform(std::string const& name, float value)
 {
     if (m_program_ == 0)
+    {
         return;
-    GLint location = glGetUniformLocation(m_program_, name.c_str());
+    }
+    GLint const location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform1f(location, value);
     }
 }
 
-void Shader::SetUniform(std::string const& name, int value)
+void Shader::setUniform(std::string const& name, int value)
 {
     if (m_program_ == 0)
+    {
         return;
-    GLint location = glGetUniformLocation(m_program_, name.c_str());
+    }
+    GLint const location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform1i(location, value);
     }
 }
 
-void Shader::SetUniform(std::string const& name, glm::vec3 const& value)
+void Shader::setUniform(std::string const& name, glm::vec3 const& value)
 {
     if (m_program_ == 0)
+    {
         return;
-    GLint location = glGetUniformLocation(m_program_, name.c_str());
+    }
+    GLint const location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform3fv(location, 1, &value[0]);
     }
 }
 
-void Shader::SetUniform(std::string const& name, glm::vec4 const& value)
+void Shader::setUniform(std::string const& name, glm::vec4 const& value)
 {
-    GLint location = glGetUniformLocation(m_program_, name.c_str());
+    if (m_program_ == 0)
+    {
+        return;
+    }
+    GLint const location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniform4fv(location, 1, &value[0]);
     }
 }
 
-void Shader::SetUniform(std::string const& name, glm::mat4 const& value)
+void Shader::setUniform(std::string const& name, glm::mat4 const& value)
 {
-    GLint location = glGetUniformLocation(m_program_, name.c_str());
+    if (m_program_ == 0)
+    {
+        return;
+    }
+    GLint const location = glGetUniformLocation(m_program_, name.c_str());
     if (location >= 0)
     {
         glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
     }
 }
 
-}  // namespace SpatialRender
+}  // namespace spatial_render

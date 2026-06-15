@@ -11,7 +11,7 @@
 using json   = nlohmann::json;
 namespace fs = std::filesystem;
 
-namespace SpatialRender
+namespace spatial_render
 {
 
 PerformanceHarness::PerformanceHarness() : m_benchmarking(false)
@@ -124,4 +124,4 @@ void PerformanceHarness::SaveSummary(std::string const& path)
     std::cout << "Saved benchmark summary: " << path << std::endl;
 }
 
-}  // namespace SpatialRender
+}  // namespace spatial_render

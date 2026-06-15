@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-namespace SpatialRender
+namespace spatial_render
 {
 
 struct BenchmarkResult
@@ -43,4 +43,4 @@ class PerformanceHarness
     bool m_benchmarking;
 };
 
-}  // namespace SpatialRender
+}  // namespace spatial_render

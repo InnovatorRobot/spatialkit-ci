@@ -9,12 +9,24 @@
 #include "scene.h"
 #include "shader.h"
 
-using namespace SpatialRender;
+namespace
+{
+constexpr float kCubeColorR = 0.8F;
+constexpr float kCubeColorG = 0.2F;
+constexpr float kCubeColorB = 0.2F;
+constexpr float kCameraFov  = 45.0F;
+constexpr float kCameraNear = 0.1F;
+constexpr float kCameraFar  = 100.0F;
+constexpr float kCameraZ    = 3.0F;
+constexpr float kClearR     = 0.1F;
+constexpr float kClearG     = 0.1F;
+constexpr float kClearB     = 0.15F;
+}  // namespace
 
-int main(int argc, char** argv)
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* const* const argv)
 {
     // Initialize GLFW
-    if (!glfwInit())
+    if (glfwInit() == 0)
     {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return -1;
@@ -27,8 +39,9 @@ int main(int argc, char** argv)
     int const width  = 1280;
     int const height = 720;
 
-    GLFWwindow* window = glfwCreateWindow(width, height, "SpatialRender", nullptr, nullptr);
-    if (!window)
+    GLFWwindow* const window =  // NOLINT(misc-const-correctness) - GLFW API requires non-const
+        glfwCreateWindow(width, height, "SpatialRender", nullptr, nullptr);
+    if (window == nullptr)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -39,8 +52,8 @@ int main(int argc, char** argv)
     glfwSwapInterval(1);  // VSync
 
     // Initialize renderer
-    Renderer renderer(width, height);
-    if (!renderer.Initialize())
+    spatial_render::Renderer renderer(width, height);
+    if (!renderer.initialize())
     {
         std::cerr << "Failed to initialize renderer" << std::endl;
         glfwDestroyWindow(window);
@@ -49,39 +62,46 @@ int main(int argc, char** argv)
     }
 
     // Load shaders
-    std::shared_ptr<Shader> shader = std::make_shared<Shader>();
-    if (!shader->LoadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"))
+    std::shared_ptr<spatial_render::Shader> shader = std::make_shared<spatial_render::Shader>();
+    if (!shader->loadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"))
     {
         std::cerr << "Failed to load shaders" << std::endl;
         return -1;
     }
 
     // Create scene
-    Scene scene;
-    std::shared_ptr<Mesh> cube = std::shared_ptr<Mesh>(CreateCubeMesh());
-    scene.AddObject(cube, shader, glm::mat4(1.0f), glm::vec3(0.8f, 0.2f, 0.2f));
+    spatial_render::Scene scene;
+    std::shared_ptr<spatial_render::Mesh> cube =
+        std::shared_ptr<spatial_render::Mesh>(spatial_render::createCubeMesh());
+    scene.addObject(cube,
+                    shader,
+                    glm::mat4(1.0F),
+                    glm::vec3(kCubeColorR, kCubeColorG, kCubeColorB));
 
     // Setup camera
-    Camera camera;
-    camera.SetPerspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
-    camera.SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
-    camera.SetTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+    spatial_render::Camera camera;
+    camera.setPerspective(kCameraFov,
+                          static_cast<float>(width) / static_cast<float>(height),
+                          kCameraNear,
+                          kCameraFar);
+    camera.setPosition(glm::vec3(0.0F, 0.0F, kCameraZ));
+    camera.setTarget(glm::vec3(0.0F, 0.0F, 0.0F));
 
     // Main loop
-    while (!glfwWindowShouldClose(window))
+    while (glfwWindowShouldClose(window) == 0)
     {
         glfwPollEvents();
 
-        renderer.BeginFrame();
-        renderer.Clear(glm::vec4(0.1f, 0.1f, 0.15f, 1.0f));
-        renderer.RenderScene(scene, camera);
-        renderer.EndFrame();
+        renderer.beginFrame();
+        renderer.clear(glm::vec4(kClearR, kClearG, kClearB, 1.0F));
+        renderer.renderScene(scene, camera);
+        renderer.endFrame();
 
         glfwSwapBuffers(window);
     }
 
     // Cleanup
-    renderer.Shutdown();
+    renderer.shutdown();
     glfwDestroyWindow(window);
     glfwTerminate();
 

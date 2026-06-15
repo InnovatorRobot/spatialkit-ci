@@ -2,13 +2,13 @@
 
 #include "mesh.h"
 
-using namespace SpatialRender;
+using namespace spatial_render;
 
 TEST(MeshTest, MeshCreation)
 {
     Mesh mesh;
-    EXPECT_EQ(mesh.GetVertexCount(), 0);
-    EXPECT_EQ(mesh.GetIndexCount(), 0);
+    EXPECT_EQ(mesh.getVertexCount(), 0);
+    EXPECT_EQ(mesh.getIndexCount(), 0);
 }
 
 TEST(MeshTest, MeshVertices)
@@ -18,24 +18,24 @@ TEST(MeshTest, MeshVertices)
                                     {{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
                                     {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}};
 
-    mesh.SetVertices(vertices);
-    EXPECT_EQ(mesh.GetVertexCount(), 3);
+    mesh.setVertices(vertices);
+    EXPECT_EQ(mesh.getVertexCount(), 3);
 }
 
 TEST(MeshTest, FactoryFunctions)
 {
-    Mesh* cube = CreateCubeMesh();
+    Mesh* cube = createCubeMesh();
     EXPECT_NE(cube, nullptr);
-    EXPECT_GT(cube->GetVertexCount(), 0);
+    EXPECT_GT(cube->getVertexCount(), 0);
     delete cube;
 
-    Mesh* sphere = CreateSphereMesh(16);
+    Mesh* sphere = createSphereMesh(16);
     EXPECT_NE(sphere, nullptr);
-    EXPECT_GT(sphere->GetVertexCount(), 0);
+    EXPECT_GT(sphere->getVertexCount(), 0);
     delete sphere;
 
-    Mesh* plane = CreatePlaneMesh();
+    Mesh* plane = createPlaneMesh();
     EXPECT_NE(plane, nullptr);
-    EXPECT_GT(plane->GetVertexCount(), 0);
+    EXPECT_GT(plane->getVertexCount(), 0);
     delete plane;
 }

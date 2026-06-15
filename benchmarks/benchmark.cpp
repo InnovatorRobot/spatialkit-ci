@@ -13,7 +13,7 @@
 #include "scene.h"
 #include "shader.h"
 
-using namespace SpatialRender;
+using namespace spatial_render;
 
 int main(int argc, char** argv)
 {
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     glfwSwapInterval(0);  // Disable VSync for benchmarking
 
     Renderer renderer(width, height);
-    if (!renderer.Initialize())
+    if (!renderer.initialize())
     {
         std::cerr << "Failed to initialize renderer" << std::endl;
         return -1;
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 
     // Load shader
     auto shader = std::make_shared<Shader>();
-    if (!shader->LoadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"))
+    if (!shader->loadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"))
     {
         std::cerr << "Failed to load shaders" << std::endl;
         return -1;
@@ -70,25 +70,25 @@ int main(int argc, char** argv)
         Scene scene;
         for (int i = 0; i < obj_count; ++i)
         {
-            auto cube           = std::shared_ptr<Mesh>(CreateCubeMesh());
+            auto cube           = std::shared_ptr<Mesh>(createCubeMesh());
             glm::mat4 transform = glm::mat4(1.0f);
             transform =
                 glm::translate(transform,
                                glm::vec3((i % 10) * 0.5f - 2.5f, (i / 10) * 0.5f - 2.5f, 0.0f));
-            scene.AddObject(cube, shader, transform, glm::vec3(0.8f, 0.2f, 0.2f));
+            scene.addObject(cube, shader, transform, glm::vec3(0.8f, 0.2f, 0.2f));
         }
 
         Camera camera;
-        camera.SetPerspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
-        camera.SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+        camera.setPerspective(45.0f, (float)width / (float)height, 0.1f, 100.0f);
+        camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 
         // Warmup
         for (int i = 0; i < 10; ++i)
         {
-            renderer.BeginFrame();
-            renderer.Clear();
-            renderer.RenderScene(scene, camera);
-            renderer.EndFrame();
+            renderer.beginFrame();
+            renderer.clear();
+            renderer.renderScene(scene, camera);
+            renderer.endFrame();
             glfwSwapBuffers(window);
         }
 
@@ -100,14 +100,14 @@ int main(int argc, char** argv)
         {
             auto frame_start = std::chrono::high_resolution_clock::now();
 
-            renderer.BeginFrame();
-            renderer.Clear();
+            renderer.beginFrame();
+            renderer.clear();
 
             auto render_start = std::chrono::high_resolution_clock::now();
-            renderer.RenderScene(scene, camera);
+            renderer.renderScene(scene, camera);
             auto render_end = std::chrono::high_resolution_clock::now();
 
-            renderer.EndFrame();
+            renderer.endFrame();
             glfwSwapBuffers(window);
 
             auto frame_end = std::chrono::high_resolution_clock::now();
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
     // Save summary
     harness.SaveSummary("benchmarks/benchmark_summary.json");
 
-    renderer.Shutdown();
+    renderer.shutdown();
     glfwDestroyWindow(window);
     glfwTerminate();
 

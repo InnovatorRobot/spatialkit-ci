@@ -1,32 +1,32 @@
 #include "scene.h"
 
-namespace SpatialRender
+namespace spatial_render
 {
 
-Scene::Scene()
-{}
+Scene::Scene() = default;
 
 Scene::~Scene()
 {
-    Clear();
+    clear();
 }
 
-void Scene::AddObject(std::shared_ptr<Mesh> mesh,
-                      std::shared_ptr<Shader> shader,
-                      glm::mat4 const& transform,
-                      glm::vec3 const& color)
+void Scene::addObject(  // NOLINT(readability-identifier-naming,misc-use-internal-linkage)
+    std::shared_ptr<Mesh> mesh,
+    std::shared_ptr<Shader> shader,
+    glm::mat4 const& transform,
+    glm::vec3 const& color)
 {
     SceneObject obj;
     obj.mesh      = mesh;
     obj.shader    = shader;
     obj.transform = transform;
     obj.color     = color;
-    m_objects.push_back(obj);
+    m_objects_.push_back(obj);
 }
 
-void Scene::Clear()
+void Scene::clear()
 {
-    m_objects.clear();
+    m_objects_.clear();
 }
 
-}  // namespace SpatialRender
+}  // namespace spatial_render

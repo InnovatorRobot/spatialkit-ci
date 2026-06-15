@@ -313,16 +313,42 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Install clang-format
+            - name: Install clang-format and clang-tidy
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y clang-format
+                  sudo apt-get install -y \
+                    clang-format \
+                    clang-tidy \
+                    libgl1-mesa-dev \
+                    libglfw3-dev \
+                    libglew-dev \
+                    cmake \
+                    ninja-build
 
             - name: Check code formatting
               run: |
                   find renderer tests benchmarks -name '*.cpp' -o -name '*.h' | \
                     xargs clang-format --dry-run --Werror || {
                     echo "Code formatting check failed. Run 'clang-format -i' to fix."
+                    exit 1
+                  }
+
+            - name: Generate compile_commands.json
+              run: |
+                  python3 tools/shader_compiler.py --all --variant release
+                  cmake -B build \
+                    -DCMAKE_BUILD_TYPE=Debug \
+                    -DBUILD_TESTS=ON \
+                    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+                    -G Ninja
+
+            - name: Run clang-tidy
+              run: |
+                  find renderer/src -name '*.cpp' | \
+                    xargs clang-tidy \
+                      -p build \
+                      --config-file=.clang-tidy || {
+                    echo "clang-tidy found issues. See output above."
                     exit 1
                   }
 

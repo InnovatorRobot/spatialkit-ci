@@ -6,7 +6,7 @@
 #include "scene.h"
 #include "shader.h"
 
-using namespace SpatialRender;
+using namespace spatial_render;
 
 class RendererTest : public ::testing::Test
 {
@@ -22,25 +22,25 @@ TEST_F(RendererTest, RendererInitialization)
 {
     Renderer renderer(800, 600);
     // Basic initialization test
-    EXPECT_EQ(renderer.GetWidth(), 800);
-    EXPECT_EQ(renderer.GetHeight(), 600);
+    EXPECT_EQ(renderer.getWidth(), 800);
+    EXPECT_EQ(renderer.getHeight(), 600);
 }
 
 TEST_F(RendererTest, CameraViewMatrix)
 {
     Camera camera;
-    camera.SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
-    camera.SetTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+    camera.setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+    camera.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    glm::mat4 view = camera.GetViewMatrix();
+    glm::mat4 view = camera.getViewMatrix();
     EXPECT_NE(view[0][0], 0.0f);  // Should be a valid matrix
 }
 
 TEST_F(RendererTest, CameraProjectionMatrix)
 {
     Camera camera;
-    camera.SetPerspective(45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
+    camera.setPerspective(45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
 
-    glm::mat4 proj = camera.GetProjectionMatrix();
+    glm::mat4 proj = camera.getProjectionMatrix();
     EXPECT_NE(proj[0][0], 0.0f);
 }

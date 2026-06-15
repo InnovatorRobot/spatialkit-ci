@@ -11,7 +11,7 @@
 #include "scene.h"
 #include "shader.h"
 
-using namespace SpatialRender;
+using namespace spatial_render;
 namespace fs = std::filesystem;
 
 class VisualRegressionTest : public ::testing::Test
@@ -44,7 +44,7 @@ class VisualRegressionTest : public ::testing::Test
         }
 
         renderer = std::make_unique<Renderer>(800, 600);
-        renderer->Initialize();
+        renderer->initialize();
 
         // Create output directory
         fs::create_directories("tests/visual/output");
@@ -69,27 +69,27 @@ TEST_F(VisualRegressionTest, RenderCubeScene)
     // Load shader
     auto shader = std::make_shared<Shader>();
     ASSERT_TRUE(
-        shader->LoadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"));
+        shader->loadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"));
 
     // Create scene
     Scene scene;
-    auto cube = std::shared_ptr<Mesh>(CreateCubeMesh());
-    scene.AddObject(cube, shader, glm::mat4(1.0f), glm::vec3(0.8f, 0.2f, 0.2f));
+    auto cube = std::shared_ptr<Mesh>(createCubeMesh());
+    scene.addObject(cube, shader, glm::mat4(1.0f), glm::vec3(0.8f, 0.2f, 0.2f));
 
     // Setup camera
     Camera camera;
-    camera.SetPerspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
-    camera.SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+    camera.setPerspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+    camera.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 
     // Render
-    renderer->BeginFrame();
-    renderer->Clear();
-    renderer->RenderScene(scene, camera);
-    renderer->EndFrame();
+    renderer->beginFrame();
+    renderer->clear();
+    renderer->renderScene(scene, camera);
+    renderer->endFrame();
 
     // Capture framebuffer
     std::string output_path = "tests/visual/output/cube_scene.png";
-    ASSERT_TRUE(renderer->SaveFramebufferToFile(output_path));
+    ASSERT_TRUE(renderer->saveFramebufferToFile(output_path));
 
     // Verify file was created
     ASSERT_TRUE(fs::exists(output_path));
@@ -99,22 +99,22 @@ TEST_F(VisualRegressionTest, RenderSphereScene)
 {
     auto shader = std::make_shared<Shader>();
     ASSERT_TRUE(
-        shader->LoadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"));
+        shader->loadFromFiles("shaders/compiled/basic.vert", "shaders/compiled/basic.frag"));
 
     Scene scene;
-    auto sphere = std::shared_ptr<Mesh>(CreateSphereMesh(32));
-    scene.AddObject(sphere, shader, glm::mat4(1.0f), glm::vec3(0.2f, 0.8f, 0.2f));
+    auto sphere = std::shared_ptr<Mesh>(createSphereMesh(32));
+    scene.addObject(sphere, shader, glm::mat4(1.0f), glm::vec3(0.2f, 0.8f, 0.2f));
 
     Camera camera;
-    camera.SetPerspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
-    camera.SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+    camera.setPerspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+    camera.setPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 
-    renderer->BeginFrame();
-    renderer->Clear();
-    renderer->RenderScene(scene, camera);
-    renderer->EndFrame();
+    renderer->beginFrame();
+    renderer->clear();
+    renderer->renderScene(scene, camera);
+    renderer->endFrame();
 
     std::string output_path = "tests/visual/output/sphere_scene.png";
-    ASSERT_TRUE(renderer->SaveFramebufferToFile(output_path));
+    ASSERT_TRUE(renderer->saveFramebufferToFile(output_path));
     ASSERT_TRUE(fs::exists(output_path));
 }

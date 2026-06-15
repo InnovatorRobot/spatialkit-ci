@@ -8,31 +8,27 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
-namespace SpatialRender
+namespace spatial_render
 {
 
-Renderer::Renderer(int width, int height) :
-    m_width(width),
-    m_height(height),
-    m_initialized(false),
-    m_defaultFBO(0)
+Renderer::Renderer(int width, int height) : m_width_(width), m_height_(height)
 {}
 
 Renderer::~Renderer()
 {
-    Shutdown();
+    shutdown();
 }
 
-bool Renderer::Initialize()
+bool Renderer::initialize()
 {
-    if (m_initialized)
+    if (m_initialized_)
     {
         return true;
     }
 
     // Initialize GLEW
     glewExperimental = GL_TRUE;
-    GLenum err       = glewInit();
+    GLenum const err = glewInit();
     if (err != GLEW_OK)
     {
         std::cerr << "Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
@@ -48,76 +44,82 @@ bool Renderer::Initialize()
     glCullFace(GL_BACK);
 
     // Get default framebuffer
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&m_defaultFBO);
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING,
+                  reinterpret_cast<GLint*>(  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+                      &m_defaultFBO_));
 
-    m_initialized = true;
+    m_initialized_ = true;
     return true;
 }
 
-void Renderer::Shutdown()
+void Renderer::shutdown()
 {
-    m_initialized = false;
+    m_initialized_ = false;
 }
 
-void Renderer::BeginFrame()
+void Renderer::beginFrame() const
 {
-    glViewport(0, 0, m_width, m_height);
+    glViewport(0, 0, m_width_, m_height_);
 }
 
-void Renderer::EndFrame()
+void Renderer::endFrame()
 {
     // Frame end logic (if needed)
 }
 
-void Renderer::Clear(glm::vec4 const& color)
+void Renderer::clear(glm::vec4 const& color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::RenderScene(Scene& scene, Camera& camera)
+void Renderer::renderScene(Scene& scene, Camera& camera)
 {
-    glm::mat4 viewProj = camera.GetViewProjectionMatrix();
+    glm::mat4 view_proj = camera.getViewProjectionMatrix();
 
-    for (auto const& obj : scene.GetObjects())
+    for (auto const& obj : scene.getObjects())
     {
         if (!obj.mesh || !obj.shader)
+        {
             continue;
+        }
 
-        obj.shader->Use();
-        obj.shader->SetUniform("u_model", obj.transform);
-        obj.shader->SetUniform("u_viewProj", viewProj);
-        obj.shader->SetUniform("u_color", obj.color);
+        obj.shader->use();
+        obj.shader->setUniform("u_model", obj.transform);
+        obj.shader->setUniform("u_viewProj", view_proj);
+        obj.shader->setUniform("u_color", obj.color);
 
-        obj.mesh->Render();
+        obj.mesh->render();
 
-        obj.shader->Unuse();
+        obj.shader->unuse();
     }
 }
 
-void Renderer::CaptureFramebuffer(std::vector<uint8_t>& pixels)
+void Renderer::
+    captureFramebuffer(  // NOLINT(readability-identifier-naming,misc-use-internal-linkage)
+        std::vector<uint8_t>& pixels)
 {
-    pixels.resize(m_width * m_height * 4);
-    glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+    pixels.resize(m_width_ * m_height_ * 4);
+    glReadPixels(0, 0, m_width_, m_height_, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
 
     // Flip vertically (OpenGL reads from bottom-left)
-    for (int y = 0; y < m_height / 2; ++y)
+    for (int y = 0; y < m_height_ / 2; ++y)
     {
-        int top    = y;
-        int bottom = m_height - 1 - y;
-        for (int x = 0; x < m_width * 4; ++x)
+        int const top    = y;
+        int const bottom = m_height_ - 1 - y;
+        for (int x = 0; x < m_width_ * 4; ++x)
         {
-            std::swap(pixels[top * m_width * 4 + x], pixels[bottom * m_width * 4 + x]);
+            std::swap(pixels[top * m_width_ * 4 + x], pixels[bottom * m_width_ * 4 + x]);
         }
     }
 }
 
-bool Renderer::SaveFramebufferToFile(std::string const& path)
+bool Renderer::saveFramebufferToFile(std::string const& path)
 {
     std::vector<uint8_t> pixels;
-    CaptureFramebuffer(pixels);
+    captureFramebuffer(pixels);
 
-    return stbi_write_png(path.c_str(), m_width, m_height, 4, pixels.data(), m_width * 4) != 0;
+    return stbi_write_png(path.c_str(), m_width_, m_height_, 4, pixels.data(), m_width_ * 4) != 0;
 }
 
-}  // namespace SpatialRender
+}  // namespace spatial_render

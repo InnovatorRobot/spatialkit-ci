@@ -1,9 +1,10 @@
-#pragma once
+#ifndef SPATIAL_RENDER_CAMERA_H_
+#define SPATIAL_RENDER_CAMERA_H_
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace SpatialRender
+namespace spatial_render
 {
 
 class Camera
@@ -12,33 +13,35 @@ class Camera
     Camera();
     Camera(glm::vec3 const& position, glm::vec3 const& target, glm::vec3 const& up);
 
-    void SetPosition(glm::vec3 const& position);
-    void SetTarget(glm::vec3 const& target);
-    void SetUp(glm::vec3 const& up);
+    void setPosition(glm::vec3 const& position);
+    void setTarget(glm::vec3 const& target);
+    void setUp(glm::vec3 const& up);
 
-    void SetPerspective(float fov, float aspect, float near, float far);
-    void SetOrthographic(float left, float right, float bottom, float top, float near, float far);
+    void setPerspective(float fov, float aspect, float near, float far);
+    void setOrthographic(float left, float right, float bottom, float top, float near, float far);
 
-    glm::mat4 GetViewMatrix() const;
-    glm::mat4 GetProjectionMatrix() const;
-    glm::mat4 GetViewProjectionMatrix() const;
+    glm::mat4 getViewMatrix() const;
+    glm::mat4 getProjectionMatrix() const;
+    glm::mat4 getViewProjectionMatrix() const;
 
-    glm::vec3 GetPosition() const { return m_position; }
-    glm::vec3 GetTarget() const { return m_target; }
-    glm::vec3 GetUp() const { return m_up; }
+    glm::vec3 getPosition() const { return m_position_; }
+    glm::vec3 getTarget() const { return m_target_; }
+    glm::vec3 getUp() const { return m_up_; }
 
  private:
-    glm::vec3 m_position;
-    glm::vec3 m_target;
-    glm::vec3 m_up;
+    glm::vec3 m_position_;
+    glm::vec3 m_target_;
+    glm::vec3 m_up_;
 
-    float m_fov;
-    float m_aspect;
-    float m_near;
-    float m_far;
+    float m_fov_;
+    float m_aspect_;
+    float m_near_;
+    float m_far_;
 
-    bool m_orthographic;
-    float m_orthoLeft, m_orthoRight, m_orthoBottom, m_orthoTop;
+    bool m_orthographic_;
+    float m_orthoLeft_, m_orthoRight_, m_orthoBottom_, m_orthoTop_;
 };
 
-}  // namespace SpatialRender
+}  // namespace spatial_render
+
+#endif  // SPATIAL_RENDER_CAMERA_H_
