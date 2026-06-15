@@ -134,11 +134,11 @@ int main(int argc, char** argv)
         std::cout << "  Frame Variance: " << result.frame_variance << std::endl;
         std::cout << std::endl;
 
-        harness.SaveResult("benchmarks/results", result);
+        harness.SaveResult("benchmarks", result);
     }
 
     // Save summary
-    harness.SaveSummary("benchmarks/results/benchmark_summary.json");
+    harness.SaveSummary("benchmarks/benchmark_summary.json");
 
     renderer.Shutdown();
     glfwDestroyWindow(window);
