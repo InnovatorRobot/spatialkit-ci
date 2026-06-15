@@ -1,10 +1,9 @@
 #pragma once
 
 #include <chrono>
+#include <glm/glm.hpp>
 #include <string>
 #include <vector>
-
-#include <glm/glm.hpp>
 
 namespace spatial_render
 {
@@ -23,7 +22,7 @@ struct BenchmarkResult
 
 class PerformanceHarness
 {
- public:
+public:
     PerformanceHarness();
     ~PerformanceHarness();
 
@@ -36,7 +35,7 @@ class PerformanceHarness
     void SaveResult(std::string const& directory, BenchmarkResult const& result);
     void SaveSummary(std::string const& path);
 
- private:
+private:
     BenchmarkResult m_current_result;
     std::vector<BenchmarkResult> m_all_results;
     std::chrono::high_resolution_clock::time_point m_benchmark_start;

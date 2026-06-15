@@ -1,10 +1,9 @@
 #ifndef SPATIAL_RENDER_MESH_H_
 #define SPATIAL_RENDER_MESH_H_
 
-#include <vector>
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 #include "renderer.h"
 
@@ -13,7 +12,7 @@ namespace spatial_render
 
 class Mesh
 {
- public:
+public:
     Mesh();
     ~Mesh();
 
@@ -32,7 +31,7 @@ class Mesh
     size_t getVertexCount() const { return m_vertices_.size(); }
     size_t getIndexCount() const { return m_indices_.size(); }
 
- private:
+private:
     std::vector<Vertex> m_vertices_;
     std::vector<unsigned int> m_indices_;
 

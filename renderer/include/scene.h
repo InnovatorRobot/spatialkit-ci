@@ -1,10 +1,9 @@
 #ifndef SPATIAL_RENDER_SCENE_H_
 #define SPATIAL_RENDER_SCENE_H_
 
+#include <glm/glm.hpp>
 #include <memory>
 #include <vector>
-
-#include <glm/glm.hpp>
 
 #include "mesh.h"
 #include "shader.h"
@@ -26,7 +25,7 @@ struct SceneObject
 
 class Scene
 {
- public:
+public:
     Scene();
     ~Scene();
 
@@ -45,7 +44,7 @@ class Scene
     std::vector<SceneObject> const& getObjects() const { return m_objects_; }
     size_t getObjectCount() const { return m_objects_.size(); }
 
- private:
+private:
     std::vector<SceneObject> m_objects_;
 };
 

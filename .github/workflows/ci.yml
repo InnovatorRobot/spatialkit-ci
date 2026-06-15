@@ -347,7 +347,8 @@ jobs:
                   find renderer/src -name '*.cpp' | \
                     xargs clang-tidy \
                       -p build \
-                      --config-file=.clang-tidy || {
+                      --config-file=.clang-tidy \
+                      --warnings-as-errors='*' || {
                     echo "clang-tidy found issues. See output above."
                     exit 1
                   }
@@ -356,3 +357,94 @@ jobs:
               run: |
                   find . -name 'CMakeLists.txt' -not -path './build/*' | \
                     head -5  # Basic check, can be expanded
+
+    code-coverage:
+        name: Code Coverage
+        runs-on: ubuntu-latest
+        needs: build-and-test
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Install dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y \
+                    build-essential \
+                    cmake \
+                    ninja-build \
+                    libgl1-mesa-dev \
+                    libglfw3-dev \
+                    libglew-dev \
+                    xvfb \
+                    lcov
+
+            - name: Compile shaders
+              run: |
+                  python3 tools/shader_compiler.py --all --variant debug
+
+            - name: Configure with coverage
+              run: |
+                  cmake -B build \
+                    -DCMAKE_BUILD_TYPE=Debug \
+                    -DBUILD_TESTS=ON \
+                    -DENABLE_COVERAGE=ON \
+                    -DENABLE_CCACHE=OFF \
+                    -G Ninja
+
+            - name: Build
+              run: |
+                  cmake --build build --parallel $(nproc)
+
+            - name: Run unit tests
+              run: |
+                  cd build
+                  xvfb-run -a ctest --output-on-failure
+              env:
+                  DISPLAY: :99
+
+            - name: Collect coverage data
+              run: |
+                  lcov --capture \
+                    --directory build \
+                    --output-file build/coverage.info \
+                    --ignore-errors mismatch
+
+            - name: Filter coverage data
+              run: |
+                  lcov --remove build/coverage.info \
+                    '/usr/*' \
+                    '*/build/_deps/*' \
+                    '*/tests/*' \
+                    --output-file build/coverage.filtered.info \
+                    --ignore-errors unused
+
+            - name: Generate HTML report
+              run: |
+                  genhtml build/coverage.filtered.info \
+                    --output-directory build/coverage_html \
+                    --title "SpatialRender Coverage"
+
+            - name: Enforce coverage threshold
+              run: |
+                  COVERAGE=$(lcov --summary build/coverage.filtered.info 2>&1 \
+                    | grep -oP 'lines\.*: \K[0-9.]+')
+                  echo "Line coverage: ${COVERAGE}%"
+                  python3 -c "
+                  import sys
+                  cov = float('${COVERAGE}')
+                  threshold = 80.0
+                  print(f'Coverage: {cov:.1f}% (threshold: {threshold}%)')
+                  if cov < threshold:
+                      print(f'FAIL: Coverage {cov:.1f}% is below {threshold}% threshold')
+                      sys.exit(1)
+                  print('PASS: Coverage meets threshold')
+                  "
+
+            - name: Upload coverage report
+              uses: actions/upload-artifact@v4
+              with:
+                  name: coverage-report
+                  path: build/coverage_html/
+                  if-no-files-found: warn

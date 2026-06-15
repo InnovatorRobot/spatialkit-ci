@@ -1,7 +1,6 @@
-#include <iostream>
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 #include "camera.h"
 #include "mesh.h"
@@ -74,10 +73,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* const* const argv)
     spatial_render::Scene scene;
     std::shared_ptr<spatial_render::Mesh> const cube =
         std::shared_ptr<spatial_render::Mesh>(spatial_render::createCubeMesh());
-    scene.addObject(cube,
-                    shader,
-                    glm::mat4(1.0F),
-                    glm::vec3(kCubeColorR, kCubeColorG, kCubeColorB));
+    scene.addObject(
+        cube, shader, glm::mat4(1.0F), glm::vec3(kCubeColorR, kCubeColorG, kCubeColorB));
 
     // Setup camera
     spatial_render::Camera camera;

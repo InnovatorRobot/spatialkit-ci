@@ -5,7 +5,6 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-
 #include <nlohmann/json.hpp>
 
 using json   = nlohmann::json;
@@ -15,10 +14,12 @@ namespace spatial_render
 {
 
 PerformanceHarness::PerformanceHarness() : m_benchmarking(false)
-{}
+{
+}
 
 PerformanceHarness::~PerformanceHarness()
-{}
+{
+}
 
 void PerformanceHarness::StartBenchmark()
 {

@@ -9,7 +9,7 @@ namespace spatial_render
 
 class Camera
 {
- public:
+public:
     Camera();
     Camera(glm::vec3 const& position, glm::vec3 const& target, glm::vec3 const& up);
 
@@ -28,7 +28,7 @@ class Camera
     glm::vec3 getTarget() const { return m_target_; }
     glm::vec3 getUp() const { return m_up_; }
 
- private:
+private:
     glm::vec3 m_position_;
     glm::vec3 m_target_;
     glm::vec3 m_up_;

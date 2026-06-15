@@ -26,7 +26,8 @@ Camera::Camera() :
     m_orthoRight_(0.0F),
     m_orthoBottom_(0.0F),
     m_orthoTop_(0.0F)
-{}
+{
+}
 
 Camera::Camera(glm::vec3 const& position, glm::vec3 const& target, glm::vec3 const& up) :
     m_position_(position),
@@ -41,7 +42,8 @@ Camera::Camera(glm::vec3 const& position, glm::vec3 const& target, glm::vec3 con
     m_orthoRight_(0.0F),
     m_orthoBottom_(0.0F),
     m_orthoTop_(0.0F)
-{}
+{
+}
 
 void Camera::setPosition(glm::vec3 const& position)
 {
@@ -67,12 +69,8 @@ void Camera::setPerspective(float fov, float aspect, float near, float far)
     m_orthographic_ = false;
 }
 
-void Camera::setOrthographic(float left,
-                             float right,
-                             float bottom,
-                             float top,
-                             float near,
-                             float far)
+void Camera::setOrthographic(
+    float left, float right, float bottom, float top, float near, float far)
 {
     m_orthoLeft_    = left;
     m_orthoRight_   = right;
@@ -92,12 +90,8 @@ glm::mat4 Camera::getProjectionMatrix() const
 {
     if (m_orthographic_)
     {
-        return glm::ortho(m_orthoLeft_,
-                          m_orthoRight_,
-                          m_orthoBottom_,
-                          m_orthoTop_,
-                          m_near_,
-                          m_far_);
+        return glm::ortho(
+            m_orthoLeft_, m_orthoRight_, m_orthoBottom_, m_orthoTop_, m_near_, m_far_);
     }
     return glm::perspective(glm::radians(m_fov_), m_aspect_, m_near_, m_far_);
 }

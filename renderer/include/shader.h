@@ -1,17 +1,16 @@
 #ifndef SPATIAL_RENDER_SHADER_H_
 #define SPATIAL_RENDER_SHADER_H_
 
-#include <string>
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <string>
 
 namespace spatial_render
 {
 
 class Shader
 {
- public:
+public:
     Shader();
     ~Shader();
 
@@ -35,7 +34,7 @@ class Shader
     GLuint getProgram() const { return m_program_; }
     bool isValid() const { return m_program_ != 0; }
 
- private:
+private:
     GLuint compileShader(GLenum type, std::string const& source);
     bool linkProgram(GLuint vertex, GLuint fragment);
     std::string readFile(std::string const& path);

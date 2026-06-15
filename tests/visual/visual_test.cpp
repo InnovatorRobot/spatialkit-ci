@@ -1,8 +1,7 @@
-#include <filesystem>
-#include <fstream>
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <filesystem>
+#include <fstream>
 #include <gtest/gtest.h>
 
 #include "camera.h"
@@ -16,7 +15,7 @@ namespace fs = std::filesystem;
 
 class VisualRegressionTest : public ::testing::Test
 {
- protected:
+protected:
     void SetUp() override
     {
         if (!glfwInit())

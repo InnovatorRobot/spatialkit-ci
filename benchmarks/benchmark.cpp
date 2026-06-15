@@ -1,10 +1,9 @@
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <chrono>
 #include <fstream>
 #include <iostream>
 #include <vector>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 #include "camera.h"
 #include "mesh.h"
@@ -72,9 +71,8 @@ int main(int argc, char** argv)
         {
             auto cube           = std::shared_ptr<Mesh>(createCubeMesh());
             glm::mat4 transform = glm::mat4(1.0f);
-            transform =
-                glm::translate(transform,
-                               glm::vec3((i % 10) * 0.5f - 2.5f, (i / 10) * 0.5f - 2.5f, 0.0f));
+            transform           = glm::translate(
+                transform, glm::vec3((i % 10) * 0.5f - 2.5f, (i / 10) * 0.5f - 2.5f, 0.0f));
             scene.addObject(cube, shader, transform, glm::vec3(0.8f, 0.2f, 0.2f));
         }
 
