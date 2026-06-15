@@ -190,7 +190,7 @@ jobs:
                   python3 tests/visual/visual_regression.py \
                     --output-dir build/tests/visual/output \
                     --golden-dir tests/visual/golden \
-                    --threshold 0.01 || true
+                    --threshold 0.01
 
             - name: Upload visual test artifacts
               if: failure()
