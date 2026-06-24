@@ -13,7 +13,7 @@ namespace
 constexpr float kPi = std::numbers::pi_v<float>;
 }  // namespace
 
-Mesh::Mesh() = default;
+Mesh::Mesh() = default;  // NOLINT(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
 
 Mesh::~Mesh()
 {

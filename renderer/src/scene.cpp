@@ -3,7 +3,7 @@
 namespace spatial_render
 {
 
-Scene::Scene() = default;
+Scene::Scene() = default;  // NOLINT(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
 
 Scene::~Scene()
 {

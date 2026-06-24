@@ -13,6 +13,8 @@ target_include_directories(spatialrender_visual_tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+add_test(NAME VisualTests COMMAND spatialrender_visual_tests)
+
 # Python script for visual regression testing
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/visual_regression.py

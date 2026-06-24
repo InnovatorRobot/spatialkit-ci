@@ -32,11 +32,9 @@ shaders/compiled/*.vert
 shaders/compiled/*.frag
 !shaders/compiled/.gitkeep
 
-# Test outputs
+# Test outputs (generated output only — golden references are committed)
 tests/visual/output/
 tests/visual/diffs/
-tests/visual/golden/*.png
-!tests/visual/golden/.gitkeep
 
 # Benchmark outputs
 benchmarks/results/

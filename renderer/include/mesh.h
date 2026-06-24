@@ -32,8 +32,8 @@ public:
     size_t getIndexCount() const { return m_indices_.size(); }
 
 private:
-    std::vector<Vertex> m_vertices_;
-    std::vector<unsigned int> m_indices_;
+    std::vector<Vertex> m_vertices_{};
+    std::vector<unsigned int> m_indices_{};
 
     GLuint m_VAO_{0};
     GLuint m_VBO_{0};

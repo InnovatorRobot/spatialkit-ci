@@ -45,7 +45,7 @@ public:
     size_t getObjectCount() const { return m_objects_.size(); }
 
 private:
-    std::vector<SceneObject> m_objects_;
+    std::vector<SceneObject> m_objects_{};
 };
 
 }  // namespace spatial_render
